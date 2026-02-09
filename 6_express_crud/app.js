@@ -3,8 +3,7 @@ import HttpError from "./middleware/HttpError.js";
 
 const app = express();
 
-
-app.use(express.json())
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.status(200).json("hello from server");
@@ -50,8 +49,6 @@ app.get("/taskList/:id", (req, res) => {
 // adding task data
 
 app.post("/addTask", (req, res) => {
-
-
   const { task, description } = req.body;
 
   const newTaskData = {
@@ -60,11 +57,71 @@ app.post("/addTask", (req, res) => {
     description,
   };
 
-
   taskList.push(newTaskData);
 
-  res.status(201).json({message:"new task added",newTaskData})
+  res.status(201).json({ message: "new task added", newTaskData });
+});
 
+// updating partial data of task list
+
+app.patch("/updateTask/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  const updateTask = taskList.find((t) => t.id === id);
+
+  if (!updateTask) {
+    return res.status(404).json("task not found");
+  }
+
+  const { task, description } = req.body;
+
+  if (task) {
+    updateTask.task = task;
+  }
+
+  if (description) {
+    updateTask.description = description;
+  }
+
+  res.status(200).json({ message: "task updated successfully", updateTask });
+});
+
+// updating whole data using put method
+
+app.put("/updateTasks/:id", (req, res) => {
+  const id = Number(req.params.id);
+
+  console.log("id", id);
+
+  const index = taskList.findIndex((t) => t.id === id);
+
+  if (!index) {
+    return res.status(404).json("task data not found with this id");
+  }
+
+  const { task, description } = req.body;
+
+  taskList[index] = { ...taskList[index], task, description };
+
+  res
+    .status(200)
+    .json({ message: "task data updated successfully", task: taskList[index] });
+});
+
+// delete task list
+
+app.delete("/DeleteTask/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const index = taskList.findIndex((t) => t.id === id);
+
+  if (index === -1) {
+    return res.status(404);
+  }
+
+  taskList.splice(index, 1);
+
+  res.status(200).json({ message: "task deleted successfully" });
 });
 
 // undefined route handling
