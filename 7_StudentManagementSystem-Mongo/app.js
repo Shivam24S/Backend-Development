@@ -2,10 +2,13 @@ import express from "express";
 
 import HttpError from "./middleware/HttpError.js";
 import connectDB from "./db/mongoose.js";
+import studentRoutes from "./routes/studentRoute.js";
 
 const app = express();
 
 app.use(express.json());
+
+app.use("/student", studentRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json("hello from server");
