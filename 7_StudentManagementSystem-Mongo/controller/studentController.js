@@ -77,32 +77,32 @@ const deleteStudent = async (req, res, next) => {
 
 // update
 
-// const updateStudent = async (req, res, next) => {
-//   try {
-//     const id = req.params.id;
+const updateStudent = async (req, res, next) => {
+  try {
+    const id = req.params.id;
 
-//     const updateStudentData = await StudentModel.findByIdAndUpdate(
-//       id,
-//       req.body,
-//       {
-//         new: true,
-//       },
-//     );
+    const updateStudentData = await StudentModel.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+      },
+    );
 
-//     if (!updateStudentData) {
-//       return next(new HttpError("failed to update student data", 404));
-//     }
+    if (!updateStudentData) {
+      return next(new HttpError("failed to update student data", 404));
+    }
 
     
 
-//     res.status(200).json({
-//       message: "student data updated successfully",
-//       updateStudentData,
-//     });
-//   } catch (error) {
-//     next(new HttpError(error.message, 500));
-//   }
-// };
+    res.status(200).json({
+      message: "student data updated successfully",
+      updateStudentData,
+    });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
 
 // manually update you have to do this always
 
