@@ -8,8 +8,12 @@ const profileSchema = new mongoose.Schema({
   },
   bio: String,
   headline: String,
+  profileImage: String,
+  resume: String,
+  projectImages: [String],
+  introVideo: String,
 });
 
-const Profile = mongoose.model("Profile");
+const Profile = mongoose.model("Profile", profileSchema);
 
 export default Profile;
