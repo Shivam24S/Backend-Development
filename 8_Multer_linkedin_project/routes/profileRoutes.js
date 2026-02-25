@@ -1,7 +1,7 @@
 import express from "express";
 
 import upload from "../middleware/upload.js";
-import createProfile from "../controller/profileController.js";
+import profileController from "../controller/profileController.js";
 
 const router = express.Router();
 
@@ -25,7 +25,19 @@ router.post(
       maxCount: 1,
     },
   ]),
-  createProfile,
+  profileController.createProfile,
 );
+
+// get all profile
+
+router.get("/allProfiles", profileController.getAllProfile);
+
+// get specific profile by id
+
+router.get("/:id", profileController.profileById);
+
+// deleting specific data
+
+router.delete("/:id", profileController.deleteProfile);
 
 export default router;
