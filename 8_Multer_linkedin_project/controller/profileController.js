@@ -84,11 +84,11 @@ const deleteProfile = async (req, res, next) => {
       fs.unlinkSync(profile.introVideo);
     }
 
-    // if (profile.projectImages) {
-    //   profile.forEach((file) => {
-    //     return fs.unlinkSync(file.projectImages);
-    //   });
-    // }
+    if (profile.projectImages) {
+      profile.projectImages.map((file) => {
+        return fs.unlinkSync(file);
+      });
+    }
 
     await profile.deleteOne();
 
@@ -100,5 +100,7 @@ const deleteProfile = async (req, res, next) => {
     next(new HttpError(error.message, 500));
   }
 };
+
+
 
 export default { createProfile, getAllProfile, profileById, deleteProfile };
