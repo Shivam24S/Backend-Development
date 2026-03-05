@@ -1,26 +1,25 @@
 import dotenv from "dotenv";
+import express from "express";
+
+import connectDb from "./config/db.js";
+import HttpError from "./middleware/HttpError.js";
+import productRouter from "./router/productRouter.js";
 
 dotenv.config({ path: "./.env" });
 
-import express from "express";
-import cors from "cors";
-
-import HttpError from "./middleware/HttpError.js";
-import connectDB from "./config/db.js";
-import productsRouter from "./routes/productRoutes.js";
-
 const app = express();
 
-app.use(cors());
 app.use(express.json());
 
-app.use("/products", productsRouter);
+app.use("/product", productRouter);
 
-console.log("port", process.env.PORT);
+console.log(process.env.MONGO_URI);
 
 app.get("/", (req, res) => {
   res.status(200).json("hello from server");
 });
+
+// undefined routes
 
 app.use((req, res, next) => {
   next(new HttpError("requested route not found", 404));
@@ -28,7 +27,7 @@ app.use((req, res, next) => {
 
 app.use((error, req, res, next) => {
   if (res.headersSent) {
-    return next(error);
+    next(error);
   }
 
   res
@@ -36,14 +35,13 @@ app.use((error, req, res, next) => {
     .json({ message: error.message || "internal server error" });
 });
 
+const port = 5000;
+
 async function startServer() {
   try {
-    await connectDB();
-
-    const port = process.env.PORT || 5000;
-
+    await connectDb();
     app.listen(port, () => {
-      console.log(`server listening on port`, port);
+      console.log("server running on port", port);
     });
   } catch (error) {
     console.log(error.message);

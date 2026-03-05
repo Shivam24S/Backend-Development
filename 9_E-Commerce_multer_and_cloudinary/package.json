@@ -1,12 +1,12 @@
 {
-  "name": "9_e-commerce_multer_and_cloudinary",
+  "name": "04_e-commerce_multer",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "node --watch app.js",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
@@ -20,8 +20,5 @@
     "mongoose": "^9.2.2",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.14"
   }
 }

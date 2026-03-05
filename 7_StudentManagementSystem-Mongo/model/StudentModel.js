@@ -82,7 +82,9 @@ const studentSchema = mongoose.Schema(
     },
 
     isActive: {
+      type: String,
       enum: ["pending", "terminate", "active", "suspend"],
+      default: "active",
     },
   },
   {

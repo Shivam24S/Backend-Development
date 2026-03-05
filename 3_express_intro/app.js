@@ -6,9 +6,9 @@ app.get("/", (req, res) => {
   res.json("hello from express server");
 });
 
-app.get("/about", (req, res) => {
-  res.json("about page");
-});
+// app.get("/about", (req, res) => {
+//   res.json("about page");
+// });
 
 const port = 5000;
 
