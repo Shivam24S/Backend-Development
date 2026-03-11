@@ -30,7 +30,7 @@ const allStudent = async (req, res, next) => {
     const studentList = await StudentModel.find({});
 
     if (!studentList.length) {
-       return next(new HttpError("no student data found", 404));
+      return next(new HttpError("no student data found", 404));
     }
 
     res
@@ -53,7 +53,7 @@ const studentById = async (req, res, next) => {
 
     res.status(200).json({ message: "student found", student });
   } catch (error) {
-   next(new HttpError("invalid student id", 400));
+    next(new HttpError("invalid student id", 400));
   }
 };
 
@@ -66,7 +66,7 @@ const deleteStudent = async (req, res, next) => {
     const deletedStudent = await StudentModel.findByIdAndDelete(id);
 
     if (!deletedStudent) {
-   return next(new HttpError("student not found", 404));
+      return next(new HttpError("student not found", 404));
     }
 
     res.status(200).json({ message: "student data deleted successfully" });
@@ -93,8 +93,6 @@ const updateStudent = async (req, res, next) => {
       return next(new HttpError("failed to update student data", 404));
     }
 
-    
-
     res.status(200).json({
       message: "student data updated successfully",
       updateStudentData,
@@ -110,36 +108,44 @@ const updateStudentData = async (req, res, next) => {
   try {
     const id = req.params.id;
 
-    const existingStudent = await StudentModel.findById(id);
+    const student = await StudentModel.findById(id);
 
-    if (!existingStudent) {
-      return next(new HttpError("student id not found", 404));
+    if (!student) {
+      return next(new HttpError("student not found", 404));
     }
 
     const updates = Object.keys(req.body);
 
-    const allowedUpdates = ["firstName", "lastName", "phoneNumber", "course"];
+    const allowedFields = ["firstName", "lastName", "phoneNumber"];
 
-    const isValidUpdates = updates.every((field) => {
-      return allowedUpdates.includes(field);
-    });
+    const isValidUpdate = updates.every((field) =>
+      allowedFields.includes(field),
+    );
 
-    if (!isValidUpdates) {
-      return next(new HttpError("only allowed field can be updated", 400));
+    if(!isValidUpdate){
+      return next(new HttpError("only allowed field can be updated",400))
     }
 
-    updates.forEach((update) => {
-      existingStudent[update] = req.body[update];
-    });
+    updates.forEach((update)=>{
+      student[update] = req.body[update]
+    })
 
-    await existingStudent.save();
+    await student.save()
 
-    res
-      .status(200)
-      .json({ message: "student data updated successfully", existingStudent });
+
+    res.status(200).json({message:"student data updated successfully",student})
+
+
   } catch (error) {
-    next(new HttpError(error.message, 500));
+     next(new HttpError(error.message, 500));
   }
 };
 
-export default { add, allStudent, studentById, deleteStudent, updateStudent ,updateStudentData};
+export default {
+  add,
+  allStudent,
+  studentById,
+  deleteStudent,
+  updateStudent,
+  updateStudentData,
+};

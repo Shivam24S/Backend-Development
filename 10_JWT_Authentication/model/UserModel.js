@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    minLength: 6,
+    minlength: 6,
     validate: (value) => {
       if (value.toLowerCase() === "password") {
         throw new Error("password can't contain password word as password");
