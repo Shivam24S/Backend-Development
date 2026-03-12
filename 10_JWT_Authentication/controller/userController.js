@@ -13,9 +13,11 @@ const add = async (req, res, next) => {
 
     const user = new User(newUser);
 
+    const token = await user.generateAuthToken();
+
     await user.save();
 
-    res.status(201).json({ success: true, user });
+    res.status(201).json({ success: true, user, token });
   } catch (error) {
     next(new HttpError(error.message, 500));
   }
@@ -31,10 +33,40 @@ const login = async (req, res, next) => {
       next(new HttpError("unable to login"));
     }
 
+    const token = await user.generateAuthToken();
+
+    res.status(200).json({ success: true, user, token });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+const getAllUser = async (req, res, next) => {
+  try {
+    const users = await User.find({});
+
+    if (users.length === 0) {
+      return next(new HttpError("no user data found", 404));
+    }
+
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+const authLogin = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return next(new HttpError("unable to login", 401));
+    }
+
     res.status(200).json({ success: true, user });
   } catch (error) {
     next(new HttpError(error.message, 500));
   }
 };
 
-export default { add, login };
+export default { add, login, getAllUser, authLogin };
