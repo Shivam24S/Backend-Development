@@ -75,7 +75,9 @@ UserSchema.methods.generateAuthToken = async function () {
     const token = jwt.sign(
       { _id: user._id.toString() },
       process.env.JWT_SECRET,
-     
+      {
+        expiresIn: "7d",
+      },
     );
 
     if (!token) {
@@ -85,6 +87,22 @@ UserSchema.methods.generateAuthToken = async function () {
     user.tokens = user.tokens.concat({ token });
 
     await user.save();
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+UserSchema.methods.toJSON = function () {
+  try {
+    const user = this;
+
+    const userObject = user.toObject();
+
+    delete userObject.password;
+
+    delete userObject.__v;
+
+    return userObject;
   } catch (error) {
     throw new Error(error.message);
   }
