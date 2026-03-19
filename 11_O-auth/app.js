@@ -3,6 +3,7 @@ import HttpError from "./middleware/HttpError.js";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import passport from "./config/passport.js";
+import session from "express-session";
 
 import dotenv from "dotenv";
 
@@ -14,7 +15,20 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  }),
+);
+
 app.use(passport.initialize());
+app.use(passport.session());
 
 app.set("view engine", "ejs");
 

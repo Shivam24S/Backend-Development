@@ -14,8 +14,15 @@ router.get(
   }),
 );
 
-router.get("/google/redirect", passport.authenticate("google"), (req, res) => {
-  res.send("this is callback url");
-});
+router.get(
+  "/google/redirect",
+  passport.authenticate("google", {
+    failureRedirect: "/",
+    session: false,
+  }),
+  (req, res) => {
+    res.send("this is callback url");
+  },
+);
 
 export default router;
