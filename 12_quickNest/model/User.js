@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
   {
@@ -30,6 +31,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
@@ -52,7 +61,7 @@ userSchema.statics.findByCredentials = async function (email, password) {
       throw new Error("unable to login");
     }
 
-    const isMatched = await bcrypt.compare(password,user.password);
+    const isMatched = await bcrypt.compare(password, user.password);
 
     if (!isMatched) {
       throw new Error("unable to login");
@@ -61,6 +70,26 @@ userSchema.statics.findByCredentials = async function (email, password) {
     return user;
   } catch (error) {
     console.log(error);
+  }
+};
+
+userSchema.methods.generateAuthToken = async function () {
+  try {
+    const user = this;
+
+    const token = jwt.sign(
+      {
+        _id: user._id.toString(),
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+    );
+
+    user.tokens = user.tokens.concat({ token });
+
+    await user.save();
+  } catch (error) {
+    throw new Error(error.message);
   }
 };
 

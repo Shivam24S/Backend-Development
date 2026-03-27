@@ -29,8 +29,24 @@ const login = async (req, res, next) => {
 
     const user = await User.findByCredentials(email, password);
 
+    const token = await user.generateAuthToken();
+
     if (!user) {
       return next(new HttpError("unable to login"));
+    }
+
+    res.status(200).json({ success: true, user, token });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+const authLogin = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return next(new HttpError("user not found", 404));
     }
 
     res.status(200).json({ success: true, user });
@@ -39,4 +55,4 @@ const login = async (req, res, next) => {
   }
 };
 
-export default { add, login };
+export default { add, login,authLogin };
