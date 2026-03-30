@@ -35,6 +35,8 @@ const login = async (req, res, next) => {
       return next(new HttpError("unable to login"));
     }
 
+    console.log("token", token);
+
     res.status(200).json({ success: true, user, token });
   } catch (error) {
     next(new HttpError(error.message, 500));
@@ -55,4 +57,51 @@ const authLogin = async (req, res, next) => {
   }
 };
 
-export default { add, login,authLogin };
+const logOut = async (req, res, next) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((t) => {
+      return t.token != req.token;
+    });
+
+    await req.user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "user logOut successfully" });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+const logOutAll = async (req, res, next) => {
+  try {
+    req.user.tokens = [];
+
+    await req.user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "user logOut from all device successfully",
+    });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+const allUser = async (req, res, next) => {
+  try {
+    const users = await User.find({});
+
+    if (users.length === 0) {
+      res.status(200).json({ success: true, message: "no user data found" });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "all user data fetched", users });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+export default { add, login, authLogin, logOut, logOutAll,allUser };

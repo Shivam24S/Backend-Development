@@ -83,14 +83,37 @@ userSchema.methods.generateAuthToken = async function () {
         role: user.role,
       },
       process.env.JWT_SECRET,
+      {
+        expiresIn:"7d"
+      }
     );
 
     user.tokens = user.tokens.concat({ token });
 
     await user.save();
+
+    return token;
   } catch (error) {
     throw new Error(error.message);
   }
+};
+
+userSchema.methods.toJSON = function () {
+  const user = this;
+
+  const userObject = user.toObject();
+
+  delete userObject.password;
+
+  delete userObject.createdAt;
+
+  delete userObject.updatedAt;
+
+  delete userObject.__v;
+
+  delete userObject.tokens;
+
+  return userObject;
 };
 
 const User = mongoose.model("User", userSchema);
