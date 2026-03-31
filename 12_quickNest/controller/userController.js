@@ -11,6 +11,8 @@ const add = async (req, res, next) => {
       password,
       role,
       phone,
+      profilePic: req.file ? req.file.path : "undefined",
+      cloudinaryId: req.file ? req.file.fileName : "undefined",
     };
 
     const user = new User(newUser);
@@ -34,8 +36,6 @@ const login = async (req, res, next) => {
     if (!user) {
       return next(new HttpError("unable to login"));
     }
-
-    console.log("token", token);
 
     res.status(200).json({ success: true, user, token });
   } catch (error) {
@@ -104,4 +104,57 @@ const allUser = async (req, res, next) => {
   }
 };
 
-export default { add, login, authLogin, logOut, logOutAll,allUser };
+const update = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return next(new HttpError("user not found", 404));
+    }
+
+    const updates = Object.keys(req.body);
+
+    const allowedFields = ["name", "password", "phone"];
+
+    const isValid = updates.every((field) => allowedFields.includes(field));
+
+    if (!isValid) {
+      return next(new HttpError("only allowed field can be updated", 400));
+    }
+
+    updates.forEach((update) => (user[update] = req.body[update]));
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "user Data updated successfully", user });
+  } catch (error) {
+    next(new HttpError(error.message));
+  }
+};
+
+const deleteUser = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    await User.deleteOne(user);
+
+    res
+      .status(200)
+      .json({ success: true, message: "user deleted successfully" });
+  } catch (error) {
+    next(new HttpError(error.message, 500));
+  }
+};
+
+export default {
+  add,
+  login,
+  authLogin,
+  logOut,
+  logOutAll,
+  allUser,
+  update,
+  deleteUser,
+};

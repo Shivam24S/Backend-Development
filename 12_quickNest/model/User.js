@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema(
       enum: ["customer", "provider", "admin", "super_admin"],
       default: "customer",
     },
+    profilePic: {
+      type: String,
+    },
+    cloudinaryId: {
+      type: String,
+    },
     isVerified: {
       type: Boolean,
       default: false,
@@ -84,8 +90,8 @@ userSchema.methods.generateAuthToken = async function () {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn:"7d"
-      }
+        expiresIn: "7d",
+      },
     );
 
     user.tokens = user.tokens.concat({ token });
