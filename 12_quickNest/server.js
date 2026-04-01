@@ -6,12 +6,15 @@ import express from "express";
 import HttpError from "./middleware/HttpError.js";
 import connectDB from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
+import adminRouter from "./routes/adminRoutes.js";
 
 const app = express();
 
 app.use(express.json());
 
 app.use("/user", userRouter);
+
+app.use("/admin", adminRouter);
 
 app.get("/", (req, res) => {
   res.json("hello from server");
