@@ -1,5 +1,6 @@
 import HttpError from "../middleware/HttpError.js";
 import User from "../model/User.js";
+import cloudinary from "../config/cloudinary.js";
 
 const add = async (req, res, next) => {
   try {
@@ -12,8 +13,10 @@ const add = async (req, res, next) => {
       role,
       phone,
       profilePic: req.file ? req.file.path : "undefined",
-      cloudinaryId: req.file ? req.file.fileName : "undefined",
+      cloudinaryId: req.file ? req.file.filename : "undefined",
     };
+
+    console.log("cloudinaryId", newUser.cloudinaryId);
 
     const user = new User(newUser);
 
@@ -124,6 +127,14 @@ const update = async (req, res, next) => {
 
     updates.forEach((update) => (user[update] = req.body[update]));
 
+    if (req.file) {
+      await cloudinary.uploader.destroy(user.cloudinaryId);
+
+      user.profilePic = req.file.path;
+
+      user.cloudinaryId = req.file.filename;
+    }
+
     await user.save();
 
     res
@@ -139,6 +150,8 @@ const deleteUser = async (req, res, next) => {
     const user = req.user;
 
     await User.deleteOne(user);
+
+    await cloudinary.uploader.destroy(user.cloudinaryId);
 
     res
       .status(200)

@@ -14,8 +14,8 @@ const router = express.Router();
 
 router.post(
   "/add",
-  validate(createUserSchema),
   uploads.single("profilePic"),
+  validate(createUserSchema),
   userController.add,
 );
 
@@ -36,8 +36,8 @@ router.get(
 
 router.patch(
   "/update",
+  uploads.single("profilePic"),
   auth,
-  validate(updateUserSchema),
   userController.update,
 );
 
