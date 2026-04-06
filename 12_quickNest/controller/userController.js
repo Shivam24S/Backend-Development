@@ -109,7 +109,9 @@ const allUser = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const user = req.user;
+    let targetedUser = req.params.id || req.user._id;
+
+    const user = await User.findById(targetedUser);
 
     if (!user) {
       return next(new HttpError("user not found", 404));
@@ -117,7 +119,11 @@ const update = async (req, res, next) => {
 
     const updates = Object.keys(req.body);
 
-    const allowedFields = ["name", "password", "phone"];
+    let allowedFields = ["name", "password", "phone", "profilePic"];
+
+    if (req.user.role === "admin" || req.user.role === "super_admin") {
+      allowedFields = [...allowedFields, "role", "isVerified"];
+    }
 
     const isValid = updates.every((field) => allowedFields.includes(field));
 
@@ -125,10 +131,20 @@ const update = async (req, res, next) => {
       return next(new HttpError("only allowed field can be updated", 400));
     }
 
+    if (
+      !req.user.role === "admin" &&
+      !req.user.role === "super_admin" &&
+      !req.user._id.toString() !== user._id.toString()
+    ) {
+      return next(new HttpError("unauthorized access", 401));
+    }
+
     updates.forEach((update) => (user[update] = req.body[update]));
 
     if (req.file) {
-      await cloudinary.uploader.destroy(user.cloudinaryId);
+      if (user.cloudinaryId) {
+        await cloudinary.uploader.destroy(user.cloudinaryId);
+      }
 
       user.profilePic = req.file.path;
 
@@ -147,11 +163,27 @@ const update = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const user = req.user;
+    const targetedUser = req.params.id || req.user._id;
+
+    const user = await User.findById(targetedUser);
+
+    if (!user) {
+      return next(new HttpError("user not found"), 401);
+    }
+
+    if (
+      !req.user.role === "admin" &&
+      !req.user.role === "super_admin" &&
+      !req.user._id.toString() !== user._id.toString()
+    ) {
+      return next(new HttpError("unauthorized access", 401));
+    }
 
     await User.deleteOne(user);
 
-    await cloudinary.uploader.destroy(user.cloudinaryId);
+    if (user.cloudinaryId) {
+      await cloudinary.uploader.destroy(user.cloudinaryId);
+    }
 
     res
       .status(200)
