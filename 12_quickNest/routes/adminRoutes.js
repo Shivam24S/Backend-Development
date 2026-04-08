@@ -12,7 +12,7 @@ import serviceController from "../controller/serviceController.js";
 
 const router = express.Router();
 
-// user
+// ==================== USER ROUTES ====================
 router.get(
   "/allUser",
   auth,
@@ -34,7 +34,8 @@ router.delete(
   userController.deleteUser,
 );
 
-// category
+// ==================== CATEGORY ROUTES ====================
+
 
 router.post(
   "/addCategory",
@@ -44,13 +45,77 @@ router.post(
   categoryController.add,
 );
 
-// service
+
+router.get(
+  "/categories",
+  auth,
+  checkRole("admin", "super_admin"),
+  categoryController.getAll,
+);
+
+
+router.get(
+  "/category/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  categoryController.getById,
+);
+
+
+router.patch(
+  "/category/:id",
+  auth,
+  validate(categorySchema),
+  checkRole("admin", "super_admin"),
+  categoryController.update,
+);
+
+router.delete(
+  "/category/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  categoryController.deleteCategory,
+);
+
+// ==================== SERVICE ROUTES ====================
 
 router.post(
   "/addService",
   auth,
   checkRole("admin", "super_admin"),
   serviceController.add,
+);
+
+
+router.get(
+  "/services",
+  auth,
+  checkRole("admin", "super_admin"),
+  serviceController.getAll,
+);
+
+
+router.get(
+  "/service/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  serviceController.getById,
+);
+
+
+router.patch(
+  "/service/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  serviceController.update,
+);
+
+
+router.delete(
+  "/service/:id",
+  auth,
+  checkRole("admin", "super_admin"),
+  serviceController.deleteService,
 );
 
 export default router;

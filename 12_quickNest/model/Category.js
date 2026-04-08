@@ -14,8 +14,8 @@ const categorySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    toJSON: { virtual: true },
-    toObject: { virtual: true },
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   },
 );
 
