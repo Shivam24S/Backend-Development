@@ -4,7 +4,14 @@ import auth from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import validate from "../middleware/validate.js";
 
-import categorySchema from "../validation/categorySchema.js";
+import {
+  createCategorySchema,
+  updateCategorySchema,
+} from "../validation/categorySchema.js";
+import {
+  createServiceSchema,
+  updateServiceSchema,
+} from "../validation/serviceSchema.js";
 
 import userController from "../controller/userController.js";
 import categoryController from "../controller/categoryController.js";
@@ -40,7 +47,7 @@ router.delete(
 router.post(
   "/addCategory",
   auth,
-  validate(categorySchema),
+  validate(createCategorySchema),
   checkRole("admin", "super_admin"),
   categoryController.add,
 );
@@ -65,10 +72,11 @@ router.get(
 router.patch(
   "/category/:id",
   auth,
-  validate(categorySchema),
+  validate(updateCategorySchema),
   checkRole("admin", "super_admin"),
   categoryController.update,
 );
+
 
 router.delete(
   "/category/:id",
@@ -79,9 +87,11 @@ router.delete(
 
 // ==================== SERVICE ROUTES ====================
 
+
 router.post(
   "/addService",
   auth,
+  validate(createServiceSchema),
   checkRole("admin", "super_admin"),
   serviceController.add,
 );
@@ -106,6 +116,7 @@ router.get(
 router.patch(
   "/service/:id",
   auth,
+  validate(updateServiceSchema),
   checkRole("admin", "super_admin"),
   serviceController.update,
 );
