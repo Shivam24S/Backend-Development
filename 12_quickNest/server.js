@@ -7,6 +7,8 @@ import HttpError from "./middleware/HttpError.js";
 import connectDB from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
+import Service from "./model/Services.js";
+import Category from "./model/Category.js";
 
 const app = express();
 
@@ -51,3 +53,32 @@ async function startServer() {
 }
 
 startServer();
+
+//
+
+const check = async () => {
+  // using manually
+  // const service = await Service.findById("69d48aa2627ce6307336a653");
+
+  // const category = await Category.findById(service.category);
+
+  // console.log(category);
+
+  // using populate
+
+  //  const service = await Service.findById("69d48aa2627ce6307336a653").populate(
+  //   "category","name -_id",
+  // );
+
+  // console.log(service);
+
+  // now using virtual finding the all service in category
+
+  const category = await Category.findById("69d33796f0f31525cbe41138").populate(
+    "services", "name description price -_id -category"
+  );
+
+  console.log(category.services);
+};
+
+check();
