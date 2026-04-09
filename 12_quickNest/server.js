@@ -5,10 +5,10 @@ import express from "express";
 
 import HttpError from "./middleware/HttpError.js";
 import connectDB from "./config/db.js";
+
 import userRouter from "./routes/userRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
-import Service from "./model/Services.js";
-import Category from "./model/Category.js";
+import bookingRouter from "./routes/bookingRoutes.js";
 
 const app = express();
 
@@ -17,6 +17,8 @@ app.use(express.json());
 app.use("/user", userRouter);
 
 app.use("/admin", adminRouter);
+
+app.use("/booking", bookingRouter);
 
 app.get("/", (req, res) => {
   res.json("hello from server");
@@ -54,31 +56,34 @@ async function startServer() {
 
 startServer();
 
-//
+// import Service from "./model/Services.js";
+// import Category from "./model/Category.js";
 
-const check = async () => {
-  // using manually
-  // const service = await Service.findById("69d48aa2627ce6307336a653");
+// relationship between service and category
 
-  // const category = await Category.findById(service.category);
+// const check = async () => {
+//   // using manually
+//   // const service = await Service.findById("69d48aa2627ce6307336a653");
 
-  // console.log(category);
+//   // const category = await Category.findById(service.category);
 
-  // using populate
+//   // console.log(category);
 
-  //  const service = await Service.findById("69d48aa2627ce6307336a653").populate(
-  //   "category","name -_id",
-  // );
+//   // using populate
 
-  // console.log(service);
+//   //  const service = await Service.findById("69d48aa2627ce6307336a653").populate(
+//   //   "category","name -_id",
+//   // );
 
-  // now using virtual finding the all service in category
+//   // console.log(service);
 
-  const category = await Category.findById("69d33796f0f31525cbe41138").populate(
-    "services", "name description price -_id -category"
-  );
+//   // now using virtual finding the all service in category
 
-  console.log(category.services);
-};
+//   const category = await Category.findById("69d33796f0f31525cbe41138").populate(
+//     "services", "name description price -_id -category"
+//   );
 
-check();
+//   console.log(category.services);
+// };
+
+// check();
