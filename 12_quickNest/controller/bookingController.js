@@ -55,9 +55,20 @@ const createBooking = async (req, res, next) => {
 
     await newBooking.save();
 
-    await newBooking.populate("serviceId");
+    await newBooking.populate([
+      {
+        path: "serviceId",
+        select: "name price duration",
+      },
+      {
+        path: "userId",
+        select: "name email phone",
+      },
+    ]);
 
-    await newBooking.populate("userId");
+    // await newBooking.populate("serviceId");
+
+    // await newBooking.populate("userId");
 
     res.status(201).json({
       success: true,
@@ -70,3 +81,6 @@ const createBooking = async (req, res, next) => {
 };
 
 export default { createBooking };
+
+
+
