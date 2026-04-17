@@ -356,9 +356,93 @@ const confirmBooking = async (req, res, next) => {
     next(new HttpError(error.message, 500));
   }
 
-
-
 };
+
+
+const cancelledBooking = async (req, res, next) => {
+
+  try {
+
+    const id = req.params.id;
+
+    const booking = await Booking.findById(id)
+
+
+    if (!booking) {
+      return next(new HttpError("booking not found", 404))
+    }
+
+
+    if (booking.status === "cancelled") {
+
+      return next(new HttpError("booking already cancelled", 500))
+
+    }
+
+    if (booking.status === "completed") {
+      return next(new HttpError("booking is already completed"))
+    }
+
+    if (booking.status === "pending" || booking.status === "confirmed") {
+
+      booking.status = "cancelled";
+
+    }
+
+
+    await booking.save();
+
+
+    res.status(200).json({ success: true, message: "booking cancelled successfully", booking });
+
+
+  } catch (error) {
+
+    next(new HttpError(error.message, 500))
+
+  }
+
+
+}
+
+
+const completedBooking = async (req, res, next) => {
+
+
+  try {
+
+    const id = req.params.id;
+
+    const booking = await Booking.findById(id);
+
+    if (!booking) {
+
+      return next(new HttpError("booking not found", 404))
+    }
+
+
+    if (booking.status === "completed") {
+      return next(new HttpError("booking already completed", 500));
+    }
+
+
+    // if(booking.status ===  )
+
+
+
+
+
+
+
+  } catch (error) {
+
+    next(new HttpError(error.message, 500))
+
+  }
+}
+
+
+
 
 
 
@@ -371,5 +455,7 @@ export default {
   getBookingById,
   bookingByUserId,
   availableTimeSlots,
-  confirmBooking
+  confirmBooking,
+  cancelledBooking,
+  completedBooking
 };
