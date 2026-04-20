@@ -1,5 +1,4 @@
 
-import { boolean, ref, required } from "joi";
 import mongoose from "mongoose";
 
 
@@ -8,13 +7,13 @@ import mongoose from "mongoose";
 const ProviderSchema = new mongoose.Schema({
 
     userId: {
-        type: mongoose.Schema.Types.ObjectId(),
+        type:mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
     services: [
         {
-            type: mongoose.Schema.Types.ObjectId(),
+            type: mongoose.Schema.Types.ObjectId,
             ref: "Services",
         }
     ],
@@ -27,20 +26,18 @@ const ProviderSchema = new mongoose.Schema({
     documents: [
         {
             type: String,
-            required: true,
+            // required: true,
         }
     ],
 
     isVerified: {
-        type: boolean,
+        type: Boolean,
         default: false,
     }
 
 
 
 })
-
-
 
 
 

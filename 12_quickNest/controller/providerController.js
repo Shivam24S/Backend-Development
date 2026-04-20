@@ -7,8 +7,6 @@ import Provider from "../model/Provider.js";
 
 
 
-
-
 const registerAsProvider = async (req, res, next) => {
 
     try {
@@ -55,6 +53,11 @@ const registerAsProvider = async (req, res, next) => {
 
         })
 
+
+        user.role = "provider"
+
+
+        await user.save();
 
         await newProvider.save();
 
