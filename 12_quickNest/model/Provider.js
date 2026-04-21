@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 const ProviderSchema = new mongoose.Schema({
 
     userId: {
-        type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
     },
@@ -15,6 +15,8 @@ const ProviderSchema = new mongoose.Schema({
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Services",
+            required: true,
+
         }
     ],
     experience: {
