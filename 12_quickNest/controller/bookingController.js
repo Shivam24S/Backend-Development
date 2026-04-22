@@ -2,6 +2,7 @@ import Service from "../model/Services.js";
 
 import HttpError from "../middleware/HttpError.js";
 import Booking from "../model/Booking.js";
+import sendWhatsAppMessage from "../utils/sendWhatsAppMessage.js";
 
 const createBooking = async (req, res, next) => {
   try {
@@ -74,6 +75,12 @@ const createBooking = async (req, res, next) => {
       message: "service booked successfully",
       newBooking,
     });
+
+    console.log("phone",newBooking.userId.phone)
+
+
+    await sendWhatsAppMessage(newBooking.userId.phone, "booking has been created successfully")
+
   } catch (error) {
     next(new HttpError(error.message, 500));
   }
