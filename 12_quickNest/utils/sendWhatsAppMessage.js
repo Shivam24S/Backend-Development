@@ -8,7 +8,7 @@ const sendWhatsAppMessage = async (to, body) => {
 
 
         const message = await clients.messages.create({
-            from: "whatsapp:+14155238886",
+            from: 'whatsapp:+14155238886',
             to: `whatsapp:+91${to}`,
             body
         })
