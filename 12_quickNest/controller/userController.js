@@ -2,7 +2,9 @@ import HttpError from "../middleware/HttpError.js";
 import User from "../model/User.js";
 import cloudinary from "../config/cloudinary.js";
 import sendEmail from "../utils/sendEmail.js";
-import { getWelcomeEmailTemplate } from "../services/emailTemplate.js"
+import { getWelcomeEmailTemplate, getResetPasswordTemplate } from "../services/emailTemplate.js"
+
+import crypto from "crypto";
 
 const add = async (req, res, next) => {
   try {
@@ -220,6 +222,101 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+
+const forgotPassword = async (req, res, next) => {
+
+  try {
+
+    const { email } = req.body;
+
+    const user = await User.findOne({ email })
+
+
+    if (!user) {
+
+      return next(new HttpError("user not found", 404))
+
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExPiry =  Date.now() + 15 * 60 * 1000;
+
+
+    await user.save();
+
+
+    const resetLink = `localhost:5000/user/reset-password/${resetToken}`
+
+
+
+    await sendEmail({
+      to: user.email,
+      subject: "Password reset Request",
+      html: getResetPasswordTemplate(user.name, resetLink),
+    })
+
+
+    res.status(200).json({ success: true, message: "password reset link send to email successfully", resetLink });
+
+
+
+  } catch (error) {
+
+    next(new HttpError(error.message))
+
+  }
+
+}
+
+
+const resetPassword = async (req, res, next) => {
+
+  try {
+
+    const { token } = req.params;
+
+
+    const { newPassword, confirmPassword } = req.body;
+
+    if (newPassword !== confirmPassword) {
+      return next(new HttpError("password is not matched", 400));
+
+    }
+
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex")
+
+
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExPiry: { $gt: Date.now() }
+
+    })
+
+
+    if (!user) {
+      return next(new HttpError("password or token is expired please try again", 400))
+    }
+
+    user.password = confirmPassword;
+    user.resetPasswordToken = null,
+      user.resetPasswordExPiry = null
+
+    await user.save();
+
+
+    res.status(200).json({ success: true, message: "password update successfully" })
+
+  } catch (error) {
+    next(new HttpError(error.message))
+  }
+}
+
 export default {
   add,
   login,
@@ -229,4 +326,6 @@ export default {
   allUser,
   update,
   deleteUser,
+  forgotPassword,
+  resetPassword
 };
