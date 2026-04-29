@@ -39,11 +39,11 @@ const userSchema = new mongoose.Schema(
     },
     resetPasswordToken: {
       type: String,
-      default: null
+      default: null,
     },
     resetPasswordExPiry: {
       type: Date,
-      default: null
+      default: null,
     },
     tokens: [
       {

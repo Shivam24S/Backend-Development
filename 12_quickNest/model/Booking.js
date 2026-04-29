@@ -12,6 +12,11 @@ const bookingSchema = new mongoose.Schema(
       ref: "Services",
       required: true,
     },
+    providerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Provider",
+      required: true,
+    },
     bookingDate: {
       type: Date,
       required: true,

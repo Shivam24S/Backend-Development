@@ -1,5 +1,3 @@
-
-
 export const getWelcomeEmailTemplate = (userName) => {
   return `
     <!DOCTYPE html>
@@ -270,9 +268,6 @@ export const getWelcomeEmailTemplate = (userName) => {
   `;
 };
 
-
-
-
 export function getResetPasswordTemplate(username, resetLink) {
   return `
 <!DOCTYPE html>
@@ -355,4 +350,4 @@ export function getResetPasswordTemplate(username, resetLink) {
 </html>
   `;
 }
-export default { getWelcomeEmailTemplate, getResetPasswordTemplate }
+export default { getWelcomeEmailTemplate, getResetPasswordTemplate };
