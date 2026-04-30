@@ -15,9 +15,16 @@ router.get(
 );
 
 router.get(
+  "/getProviderBookings",
+  auth,
+  checkRole("admin", "super_admin"),
+  providerController.getProviderBookings,
+);
+
+router.get(
   "/getProviderBookings/:id",
   auth,
-  checkRole("admin,super_admin,provider"),
+  checkRole("provider"),
   providerController.getProviderBookings,
 );
 
