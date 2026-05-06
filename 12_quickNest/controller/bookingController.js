@@ -93,12 +93,12 @@ const createBooking = async (req, res, next) => {
 
   const lockKey = `bookings:${serviceId}:${bookingDate}:${timeSlot}`;
 
-  const userId = req.user._id;
+  const userId = req.user?._id;
 
   let lockAcquired = false;
 
   try {
-    if (!serviceId || !bookingDate || !timeSlot || !notes || !providerId) {
+    if (!serviceId || !bookingDate || !timeSlot  || !providerId) {
       return next(new HttpError("some necessary field are missing"));
     }
 
@@ -118,7 +118,7 @@ const createBooking = async (req, res, next) => {
       return next(new HttpError("can't create bookings for past days", 400));
     }
 
-    if (selectedDate > max) {
+    if (selectedDate > maxDate) {
       return next(
         new HttpError("advance booking can be book upto 7 days only", 400),
       );
