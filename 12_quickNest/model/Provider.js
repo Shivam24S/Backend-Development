@@ -17,12 +17,17 @@ const ProviderSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+
   documents: [
     {
       type: String,
       // required: true,
     },
   ],
+  documents_cloudinary_id: {
+    type: String,
+    required: true,
+  },
 
   isVerified: {
     type: Boolean,

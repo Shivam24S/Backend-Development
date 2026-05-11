@@ -23,25 +23,26 @@ const registerAsProvider = async (req, res, next) => {
       );
     }
 
-    const { services, experience, documents } = req.body;
+    const { experience, documents } = req.body;
 
-    if (!services || !Array.isArray(services) || services.length === 0) {
-      return next(new HttpError("service is required", 500));
-    }
+    // if (!services || !Array.isArray(services) || services.length === 0) {
+    //   return next(new HttpError("service is required", 500));
+    // }
 
-    const validService = await Service.find({
-      _id: { $in: services },
-    }).select("_id");
+    // const validService = await Service.find({
+    //   _id: { $in: services },
+    // }).select("_id");
 
-    if (validService.length !== services.length) {
-      return next(new HttpError("service are missing "));
-    }
+    // if (validService.length !== services.length) {
+    //   return next(new HttpError("service are missing "));
+    // }
 
     const newProvider = new Provider({
       userId,
-      services: validService,
+      // services: validService,
       experience,
-      documents,
+      documents: req.file ? req.file.path : "undefined",
+      documents_cloudinary_id: req.file ? req.file.filename : "undefined",
     });
 
     user.role = "provider";
@@ -121,9 +122,5 @@ const getProviderBookings = async (req, res, next) => {
     next(new HttpError(error.message, 500));
   }
 };
-
-
-
-
 
 export default { registerAsProvider, getProvider, getProviderBookings };

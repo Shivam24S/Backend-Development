@@ -4,7 +4,7 @@ import userController from "../controller/userController.js";
 
 import validate from "../middleware/validate.js";
 import auth from "../middleware/auth.js";
-import uploads from "../middleware/upload.js";
+import {uploadProfile} from "../middleware/upload.js";
 import checkRole from "../middleware/checkRole.js";
 
 import { authLimiter } from "../middleware/rateLimit.js";
@@ -15,8 +15,8 @@ const router = express.Router();
 
 router.post(
   "/add",
-  uploads.single("profilePic"),
-  validate(createUserSchema),
+  uploadProfile.single("profilePic"),
+  // validate(createUserSchema),
   userController.add,
 );
 
@@ -37,7 +37,7 @@ router.get(
 
 router.patch(
   "/update",
-  uploads.single("profilePic"),
+  // uploads.single("profilePic"),
   auth,
   userController.update,
 );
