@@ -23,26 +23,41 @@ const registerAsProvider = async (req, res, next) => {
       );
     }
 
-    const { experience, documents } = req.body;
+    let { services, experience } = req.body;
 
     // if (!services || !Array.isArray(services) || services.length === 0) {
     //   return next(new HttpError("service is required", 500));
     // }
 
-    // const validService = await Service.find({
-    //   _id: { $in: services },
-    // }).select("_id");
+    if (!services) {
+      return next(new HttpError("service is required", 400));
+    }
 
-    // if (validService.length !== services.length) {
-    //   return next(new HttpError("service are missing "));
-    // }
+    // convert single value to array
+    if (!Array.isArray(services)) {
+      services = [services];
+    }
+
+    if (services.length === 0) {
+      return next(new HttpError("service is required", 400));
+    }
+
+    const validService = await Service.find({
+      _id: { $in: services },
+    }).select("_id");
+
+    if (validService.length !== services.length) {
+      return next(new HttpError("service are missing "));
+    }
 
     const newProvider = new Provider({
       userId,
-      // services: validService,
+      services: validService,
       experience,
-      documents: req.file ? req.file.path : "undefined",
-      documents_cloudinary_id: req.file ? req.file.filename : "undefined",
+      documents: req.files.map(file => file.path),
+      documents_cloudinary_id:  req.files.map(
+        file => file.filename
+      ),
     });
 
     user.role = "provider";

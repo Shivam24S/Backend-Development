@@ -20,12 +20,12 @@ const ProviderSchema = new mongoose.Schema({
 
   documents: [
     {
-      type: String,
+      type: [String],
       // required: true,
     },
   ],
   documents_cloudinary_id: {
-    type: String,
+    type: [String],
     required: true,
   },
 
