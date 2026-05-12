@@ -2,7 +2,7 @@ import multer from "multer";
 import cloudinary from "../config/cloudinary.js";
 
 import { CloudinaryStorage } from "multer-storage-cloudinary";
-import path from "path"
+import path from "path";
 
 // const storage = new CloudinaryStorage({
 //   cloudinary,
@@ -28,7 +28,7 @@ import path from "path"
 
 const createUpload = ({
   folder,
-  format,
+  formats,
   mimeTypes = [],
   transformation,
   fileSize = 5 * 1024 * 1024,
@@ -38,7 +38,7 @@ const createUpload = ({
     cloudinary,
     params: async (req, file) => ({
       folder,
-      allowed_formats: format,
+      allowed_formats: formats,
       public_id: `${file.fieldname + "-" + Date.now() + path.extname(file.originalname)}`,
       transformation,
     }),
@@ -46,14 +46,14 @@ const createUpload = ({
 
   return multer({
     storage,
-    limits: fileSize,
+    limits: { fileSize },
     fileFilter: (req, file, cb) => {
       if (mimeTypes.length === 0 || mimeTypes.includes(file.mimetype)) {
         cb(null, true);
       } else {
         cb(
           new Error(
-            `file format is not valid please select from these files format ${mimeTypes.join().split(" ")}`,
+            `file format is not valid please select from these files format ${mimeTypes.join(",").split(" ")}`,
             false,
           ),
         );

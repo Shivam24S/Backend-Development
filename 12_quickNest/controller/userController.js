@@ -8,6 +8,7 @@ import {
 } from "../services/emailTemplate.js";
 
 import crypto from "crypto";
+import auditLogger from "../utils/auditLogger.js";
 
 const add = async (req, res, next) => {
   try {
@@ -219,6 +220,15 @@ const deleteUser = async (req, res, next) => {
     if (user.cloudinaryId) {
       await cloudinary.uploader.destroy(user.cloudinaryId);
     }
+
+    await auditLogger({
+      action: "USER_DELETE",
+      performedBy: req.user._id,
+      module: user.role,
+      targetedId: user._id,
+      Ip: req.ip,
+      userAgent: req.get("User-Agent"),
+    });
 
     res
       .status(200)

@@ -44,6 +44,10 @@ router.patch(
 
 router.delete("/delete", auth, userController.deleteUser);
 
+
+
+
+
 router.post("/forgot-password", userController.forgotPassword);
 
 router.post("/reset-password/:token", userController.resetPassword);
