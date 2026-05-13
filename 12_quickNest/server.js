@@ -17,6 +17,13 @@ import hpp from "hpp";
 
 const app = express();
 
+app.use(
+  "/payment/webhook",
+  express.raw({
+    type: "application/json",
+  })
+);
+
 app.use(express.json());
 
 app.use(helmet());
