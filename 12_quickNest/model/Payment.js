@@ -18,11 +18,11 @@ const paymentSchema = new mongoose.Schema(
     },
     razorPayPaymentId: {
       type: String,
-      required: true,
+      required: false,
     },
     razorPaySignature: {
       type: String,
-      required: true,
+      required: false,
     },
     amount: {
       type: Number,
@@ -36,13 +36,12 @@ const paymentSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      num: ["created", "pending", "captured", "failed", "refunded"],
+      enum: ["created", "pending", "captured", "failed", "refunded"],
       default: "created",
     },
     paidAt: {
       type: Date,
-      required: true,
-      default: Date.now,
+      default: null,
     },
   },
   { timestamps: true },

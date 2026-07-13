@@ -11,17 +11,23 @@ async (req, res) => {
     const signature =
       req.headers["x-razorpay-signature"];
 
+    console.log("Webhook received");
+    console.log("Signature from header:", signature);
+
     const expectedSignature =
       crypto
         .createHmac(
           "sha256",
-          process.env.RAZORPAY_WEBHOOK_SECRET
+          process.env.RAZORPAY_TEST_API_SECRET
         )
         .update(req.body)
         .digest("hex");
 
+    console.log("Expected signature:", expectedSignature);
+
     if (signature !== expectedSignature) {
 
+      console.log("Signature mismatch!");
       return res.status(400).json({
         message: "Invalid webhook",
       });

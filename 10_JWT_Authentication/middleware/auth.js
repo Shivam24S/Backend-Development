@@ -36,4 +36,4 @@ const auth = async function (req, res, next) {
   }
 };
 
-export default auth;
+

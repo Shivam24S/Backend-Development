@@ -10,6 +10,7 @@ import userRouter from "./routes/userRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import providerRouter from "./routes/providerRoutes.js";
+import paymentRouter from "./routes/paymentRoutes.js";
 
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
@@ -39,6 +40,8 @@ app.use("/admin", adminRouter);
 app.use("/booking", bookingRouter);
 
 app.use("/provider", providerRouter);
+
+app.use("/payment", paymentRouter);
 
 app.get("/", (req, res) => {
   res.json("hello from server");
